@@ -12,7 +12,7 @@ Assess the supplied technologies against the project scope established below. Re
 ## Establish scope
 
 - Use the supplied URLs and any explicitly supplied local articles or newsletters. If no inputs are supplied or present in the conversation, ask for them.
-- The saved projects live in `projects.md` in this skill's directory. When that file is missing, run onboarding before the assessment.
+- The saved projects live in `~/.config/assess-tech/projects.md`, outside the skill folder so skill updates keep them. When that file is missing, run onboarding before the assessment.
 - When the user names project paths, assess against those for this run instead of the saved projects. Resolve relative paths from the current working directory and verify each project's boundary through nearby instructions and manifests. Change `projects.md` only when the user asks to update their projects.
 - If a project path is missing, report the evidence gap and continue with the accessible projects without substituting another project.
 - When the user adds another technology to this assessment, retain the established project scope unless they change it, incorporate the prior candidates from the conversation and return the full reranked table. Preserve earlier evidence limits and refresh facts that affect the ranking. When that earlier assessment is unavailable, assess the supplied inputs without inventing it.
@@ -24,7 +24,7 @@ Runs on first use, or when the user asks to update their projects.
 1. Ask which projects every assessment should cover: a name and a root path for each. Offer the repository containing the current working directory as the first entry when there is one.
 2. Verify each path exists and holds a project. Ask again for any that fail.
 3. Give each project one distinct emoji icon that fits it, unless the user picked one.
-4. Write `projects.md` in this skill's directory as a single table, then show it to the user:
+4. Write `~/.config/assess-tech/projects.md` as a single table, creating the folder if needed, then show it to the user:
 
    ```markdown
    | Project | Root |

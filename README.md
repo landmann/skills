@@ -24,18 +24,15 @@ For each tool the report has:
 
 See a [sample report on TypeSafe Jev](examples/typesafe-jev.md).
 
-The first time you run it, it asks which projects to assess against and saves the list in `projects.md` in the skill folder. Say "update my projects" to change the list, or pass paths for a single run.
+The first time you run it, it asks which projects to assess against and saves the list in `~/.config/assess-tech/projects.md`. Say "update my projects" to change the list, or pass paths for a single run.
 
 ### Install
 
-Claude Code:
-
 ```sh
-git clone https://github.com/landmann/skills.git ~/landmann-skills
-cp -r ~/landmann-skills/assess-tech ~/.claude/skills/
+npx skills add landmann/skills --skill assess-tech -g
 ```
 
-Codex: copy the same folder into `~/.codex/skills/`.
+It asks which agents to install to. Claude Code, Codex, Cursor and others are supported. Needs Node.js 22.20 or later.
 
 ### Use
 
