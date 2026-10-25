@@ -22,6 +22,8 @@ For each tool the report has:
 - a side-by-side with how your code does the same job today, with `file:line` references
 - a ranked table of where to use it, with a verdict for each row
 
+See a [sample report on TypeSafe Jev](examples/typesafe-jev.md).
+
 The first time you run it, it asks which projects to assess against and saves the list in `projects.md` in the skill folder. Say "update my projects" to change the list, or pass paths for a single run.
 
 ### Install
