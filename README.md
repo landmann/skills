@@ -4,6 +4,8 @@ Agent skills I use every day with Claude Code and Codex.
 
 ## assess-tech
 
+![assess-tech sample run](examples/assess-tech-demo.gif)
+
 Give it links to repos, APIs, products, or articles. It reads the docs and source, reads your code, and gives each one a verdict: **Implement**, **Conditional**, or **Skip**. "Worth exploring" isn't an option.
 
 To get Implement, a tool has to pass four checks:
@@ -15,12 +17,15 @@ To get Implement, a tool has to pass four checks:
 
 Most tools get Skip. That's what it's for.
 
+A Skip doesn't end the review. It also reads the tool's source for ideas worth copying, such as a data model, a scoring rule, a UX pattern or a prompt. Each idea gets its own verdict, so you can turn down a tool and still take its best idea.
+
 For each tool the report has:
 
-- a one-line tl;dr in the form `inputs → [black box] → outputs`
+- a one-line tl;dr in the form `inputs → [black box] → outputs`, plus how other teams use it
 - an ASCII diagram of how it works inside
 - a side-by-side with how your code does the same job today, with `file:line` references
-- a ranked table of where to use it, with a verdict for each row
+- ideas worth borrowing, with ones your code already has filtered out
+- one ranked table of tools and borrowed ideas, with a verdict for each row
 
 See a [sample report on TypeSafe Jev](examples/typesafe-jev.md).
 

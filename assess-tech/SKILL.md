@@ -1,13 +1,18 @@
 ---
 name: assess-tech
-description: Explain and assess technology repository, product, API, and article URLs against your codebase. Teach how each works, compare it with the current approach, and recommend Implement, Conditional, or Skip based on demonstrated value and the full adoption cost.
+description: Explain and assess technology repository, product, API, and article URLs against your codebase. Teach how each works, study how others use it, compare it with the current approach, mine it for ideas to borrow, and recommend Implement, Conditional, or Skip based on demonstrated value and the full adoption cost.
 ---
 
 # Assess tech
 
 Invocation: `/assess-tech <urls> [project paths]`.
 
-Assess the supplied technologies against the project scope established below. Return a concise, source-backed report with a firm decision, an explanation of how each technology works, and the smallest complete implementation worth doing, if any. The invocation authorizes read-only research. Implement and Conditional verdicts are recommendations, not execution permission. Installation, implementation, paid calls, credential sharing, and outbound actions require their own authorization.
+Assess the supplied technologies against the project scope established below, at two levels:
+
+- **Adopt**: should we use the technology itself?
+- **Borrow**: which of its designs, features, data models, algorithms, UX patterns, rules, prompts or operational practices would make any of our projects better, even when the technology itself is rejected?
+
+A Skip on adoption never ends the assessment; the borrow pass still runs. Return a concise, source-backed report with firm decisions at both levels, an explanation of how each technology works and how others use it, and the smallest complete implementation worth doing, if any. The invocation authorizes read-only research. Implement and Conditional verdicts are recommendations, not execution permission. Installation, implementation, paid calls, credential sharing, and outbound actions require their own authorization.
 
 ## Establish scope
 
@@ -44,6 +49,19 @@ Onboarding is done when `projects.md` exists, lists every project the user named
 - Inspect the target project's current dependencies and relevant implementation before recommending adoption or replacement. Reuse the project's own docs and agent instructions for context; recheck drift-prone facts. Inspect only the files needed to establish the fit and overlap, keeping secrets out of output.
 - Account for every supplied technology. An inaccessible source gets an explicit evidence gap and a Skip verdict. Narrow claims when evidence is incomplete.
 
+### See it in the wild
+
+Before forming a view, find how other people actually use each technology. Search for production case studies, engineering blog posts, conference talks, public repositories that depend on it (GitHub dependents, code search for its import or config), showcase pages, and recurring issues or discussions. Gather two to five concrete uses, favouring independent teams over the vendor's own showcase. For each, note the job it does there, the pattern they built around it, and any reported limits or regrets. These uses feed both levels: an unexpected use can reveal a fit for one of our projects, and repeated complaints count against adoption. Label vendor-published stories as vendor evidence.
+
+### Mine for borrowable ideas
+
+Read past the README into the implementation, the way an engineer studies a well-built codebase. Look across every layer: data model and invariants, algorithms and scoring rules, UX patterns and copy, workflows and states, background jobs and queues, security guards, prompts and agent skills, docs and ADRs, developer tooling. Judge each candidate idea against every saved project, not just the one the technology obviously targets.
+
+- When the source is large and your agent supports subagents, shallow-clone each repository into a temporary directory, then dispatch read-only subagents in parallel, one per non-overlapping slice (front end, server, agent or worker, docs), each returning ranked ideas with mechanism, `file:line` evidence, and the smallest piece to copy. Dispatch further subagents in the same wave to inventory what each of our projects already has in the matching areas.
+- Drop any idea one of our projects already implements, and cite the existing code. Compare against the strongest existing version, which is sometimes better than the source's (for example, a stricter fetch guard).
+- Establish need from real usage. Where a read-only route exists (the project's documented production read command, a read-only CLI data export), count the rows, volumes, or failures the idea would act on. Use read access only, and keep personal data out of the report. An idea that improves a workflow with no data or users yet earns Conditional with a measurable trigger. When no read route works, record the evidence gap.
+- Open every cited location an idea depends on before recommending it, and note any defect in the source worth not copying.
+
 ## Assess and prioritize
 
 Give each technology-to-workflow recommendation exactly one verdict: **Implement**, **Conditional**, or **Skip**. Challenge the case for adoption before presenting it; the user should not have to ask for pushback. A possible use case is insufficient. Recommend Implement only when the evidence supports all four:
@@ -57,7 +75,7 @@ Use Conditional only when evidence supports all four requirements for a defined 
 
 Finish the authorized read-only research before making the call. Missing evidence of need, benefit, or full cost still earns Skip; Conditional requires a concrete condition that changes the decision. Conviction means making the decision supported by the evidence, not inventing certainty. All candidates may deserve Skip.
 
-- The three verdicts are the whole vocabulary: no Pilot, Defer, Borrow, Check/upgrade, or "worth exploring". A small borrowed idea or an upgrade can earn Implement when it meets the same bar without adding an unnecessary dependency. A Skip gets no speculative pilot, installation, monitoring task, or adoption backlog; name a reconsideration trigger only when a concrete change would alter the decision.
+- Use no Pilot, Defer, Borrow, or Check/upgrade verdicts and no "worth exploring" escape hatch. Each borrowed idea gets its own row and its own Implement, Conditional, or Skip verdict under the same four requirements: the baseline is our existing code, and the full cost is the code we write and maintain, with no new dependency. An upgrade earns Implement on the same terms. A Skip gets no speculative pilot, installation, monitoring task, or adoption backlog; name a reconsideration trigger only when a concrete change would alter the decision.
 - Rank Implement decisions first, then Conditional, then Skip. Within each group, rank by demonstrated value over the baseline, readiness, and total effort. Use consecutive priorities rather than invented numeric scores. Keep rejected candidates visible with the decisive reason.
 - Label vendor benchmarks and success rates as vendor evidence. Distinguish transport success, useful coverage, factual accuracy, and validation. For metered enrichment, distinguish per-call, per-result, and per-success billing, fallback costs, and separate verification.
 - An Implement recommendation includes acceptance against real app inputs and the current baseline, measuring the completed user or engineering workflow. Define a cost ceiling before any metered validation. Staging and rollout checks belong to completing the chosen implementation; they do not rescue an unsupported adoption decision. Identify async latency where it changes the user flow.
@@ -68,7 +86,7 @@ Finish the authorized read-only research before making the call. Missing evidenc
 
 Write plainly: short sentences, concrete numbers and names, plain words over hype. Prefix each project name with its icon from `projects.md` everywhere in the report, including headings, prose, and table cells. For a project outside `projects.md`, choose one distinct icon and reuse it throughout. Keep literal paths, code, URLs, and source quotations unchanged.
 
-Open with the Implement, Conditional, or Skip decision and its strongest reason; for multiple technologies, name the winners, conditional choices, and rejected candidates briefly. Then explain the evidence in four parts, in this order.
+Open with the adoption decision and its strongest reason, then the best borrowed idea and its verdict; for multiple technologies, name the winners, conditional choices, and rejected candidates briefly. Then explain the evidence in five parts, in this order.
 
 ### 1. Tech tl;dr
 
@@ -78,6 +96,7 @@ One short block per technology, linked to its primary source:
 - **What it is**: one or two plain sentences a developer new to it would understand. Name its category by analogy to something familiar when that helps.
 - **Use cases**: the two to four jobs it is built for in general, independent of our apps.
 - **Status**: maturity, license or pricing model, and maintenance signal, in one line.
+- **In the wild**: the two to five uses found by others, one linked line each naming who, the job, and the pattern or limit worth knowing.
 
 ### 2. How it works
 
@@ -104,20 +123,24 @@ For each technology, compare its black box with the way our apps do the same job
 - Follow with a compact table, columns `Dimension | Ours today | This tech`, covering only the dimensions that differ in a way that matters: quality, cost, latency, control, data ownership, maintenance, and what the user sees.
 - End with one sentence on the net difference: what we would gain, what we would give up.
 
-### 4. Where we can use it
+### 4. Ideas worth borrowing
 
-Lead with one sentence stating what is worth implementing now, what depends on a condition, or that nothing clears the bar. Include this compact legend above the table: 🔵 top Implement recommendation · 🟢 other Implement recommendations · 🟠 Conditional · 🟡 Skip. Use 🔵 only for the highest-ranked Implement row and 🟢 for the remaining Implement rows. If there are no Implement rows, use neither. Assign dots per recommendation, not per project, and recalculate them when reranking. Then use these exact columns:
+For each technology, list the ideas from the borrow pass that survived the inventory, one short block each: the idea in a phrase, how it works in two or three sentences, the linked source file, the project it would improve with the `file:line` it would change, and the production evidence of need. Follow with a compact `Idea | Already covered by` table for candidates dropped because a project already has them. The verdicts go in part 5.
+
+### 5. Where we can use it
+
+Lead with one sentence stating what is worth implementing now, what depends on a condition, or that nothing clears the bar, at both the adoption and the borrow level. Include this compact legend above the table: 🔵 top Implement recommendation · 🟢 other Implement recommendations · 🟠 Conditional · 🟡 Skip. Use 🔵 only for the highest-ranked Implement row and 🟢 for the remaining Implement rows. If there are no Implement rows, use neither. Assign dots per recommendation, not per project, and recalculate them when reranking. Then use these exact columns:
 
 | Priority | Tool or idea | Put it where | Pros | Cons | Recommendation |
 |---:|---|---|---|---|---|
 | 1 | [Technology](primary-source-url): useful capability | 🛒 Storefront, specific workflow | Concrete benefit over what we have | Full adoption cost or decisive evidence gap | 🔵 **Implement.** Smallest complete scope and acceptance. |
 
 - Keep each cell to a short phrase or two. Write `—` in Pros or Cons when there are none, rather than padding the cell.
-- Each row is a concrete technology-to-workflow recommendation. Split one technology into multiple rows only when its uses have different actions or priorities. Combine complementary tools only when the combination changes what should be built.
+- Each row is a concrete technology-to-workflow or idea-to-workflow recommendation, and adoption and borrowed-idea rows rank together in one table. For a borrowed idea, link the source file in the tool cell. Split one technology into multiple rows only when its uses have different actions or priorities. Combine complementary tools only when the combination changes what should be built.
 - Start the Recommendation cell with its colored dot and **Implement**, **Conditional**, or **Skip**. Implement names the complete scope and acceptance; Conditional states the condition and both outcomes; Skip names the decisive reason against adoption. Keep the written verdict beside every dot, including in compact skipped-items tables.
-- Link supporting primary sources in the tool cell or beside the claim they support. Close with a short, firm recommendation. When a broad article contains many rejected items, put them in a compact skipped-items table, each with a one-line tl;dr and rejection reason in place of parts 1 to 3.
-- When the user adds a technology to an earlier assessment, write parts 1 to 3 for the new technology only and return the full reranked table.
+- Link supporting primary sources in the tool cell or beside the claim they support. Close with a short, firm recommendation. When a broad article contains many rejected items, put them in a compact skipped-items table, each with a one-line tl;dr and rejection reason in place of parts 1 to 4.
+- When the user adds a technology to an earlier assessment, write parts 1 to 4 for the new technology only and return the full reranked table.
 - State material untested assumptions succinctly. Present proposals as proposals and keep the research log out of the report.
 - Default deliverable is the report in chat. Save a report or create an implementation plan only when requested.
 
-Completion: every assessed technology has an inputs → black box → outputs tl;dr with general use cases, a diagram opening that black box with its walkthrough, and a code-grounded comparison with our current approach; every supplied input has an Implement, Conditional, or Skip verdict; every Implement clears all four adoption requirements and names complete scope and acceptance; every Conditional names a verifiable condition and both outcomes; every Skip states its decisive reason; project icons and recommendation dots follow the report rules; priorities account for the full adoption cost; links support load-bearing external claims; evidence and authorization boundaries remain clear. Apply the compact skipped-items exception above for broad articles.
+Completion: every assessed technology has an inputs → black box → outputs tl;dr with general use cases and linked uses by others, a diagram opening that black box with its walkthrough, a code-grounded comparison with our current approach, and a borrow pass whose implementation layers were read and judged against every saved project, with each surviving idea checked against what our projects already have and against real usage; every supplied input has an Implement, Conditional, or Skip verdict; every Implement clears all four adoption requirements and names complete scope and acceptance; every Conditional names a verifiable condition and both outcomes; every Skip states its decisive reason; project icons and recommendation dots follow the report rules; priorities account for the full adoption cost; links support load-bearing external claims; evidence and authorization boundaries remain clear. Apply the compact skipped-items exception above for broad articles.
