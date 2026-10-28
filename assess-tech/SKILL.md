@@ -107,7 +107,9 @@ One short block per technology, linked to its primary source:
 
 For each technology, open the black box from part 1: the moving parts inside it, what flows between them, where it runs, and what the caller does versus what the technology does. Teach with a diagram, then a few sentences walking through it.
 
-- Draw ASCII box-and-arrow diagrams in fenced `text` blocks, at most 80 columns wide, so they render in any terminal. Label every arrow with what flows along it (request, event, embedding, webhook).
+- Draw box-and-arrow diagrams in fenced `text` blocks, up to 130 columns wide. Spend that width on air: give every box an empty row above and below its label, keep two spaces around each arrow, and leave a blank row inside the black box frame. When the flow outgrows 130 columns, continue it on a second row of boxes instead of shrinking labels or gaps.
+- Lead each box and each input and output with one emoji that names its role (📥 input, 📤 output, 🧩 client, 🌐 API, 📬 queue, 🤖 model). An emoji fills two columns, so pad box edges to match. Prefer emoji without a variation selector, since terminals disagree on their width.
+- Label every arrow with what flows along it (request, event, embedding, webhook).
 - Keep the part 1 inputs on the left edge and outputs on the right edge, so the diagram visibly expands the same black box.
 - Show the real mechanism, drawn from the inspected docs or source: the request path, the data pipeline, or the build-time versus runtime split.
 - One diagram per technology; add a second only when it has distinct phases, such as setup versus steady state.
@@ -115,9 +117,15 @@ For each technology, open the black box from part 1: the moving parts inside it,
 Example shape:
 
 ```text
-            ┌──────────────── black box ────────────────┐
- inputs ──▶ │ SDK client ──HTTPS──▶ Vendor API ──▶ queue │ ──▶ outputs
-            └───────────────────────────────────────────┘
+                ┌───────────────────────────────────────── black box ──────────────────────────────────────────┐
+                │                                                                                              │
+                │   ┌────────────────┐                  ┌────────────────┐                ┌────────────────┐   │
+                │   │                │                  │                │                │                │   │
+📥 inputs  ──▶  │   │ 🧩 SDK client  │  ── request ──▶  │ 🌐 Vendor API  │  ── event ──▶  │  📬 Job queue  │   │  ──▶  📤 outputs
+                │   │                │                  │                │                │                │   │
+                │   └────────────────┘                  └────────────────┘                └────────────────┘   │
+                │                                                                                              │
+                └──────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 3. Compared to what we do now
