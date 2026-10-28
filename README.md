@@ -31,6 +31,8 @@ See a [sample report on TypeSafe Jev](examples/typesafe-jev.md).
 
 The first time you run it, it asks which projects to assess against and saves the list in `~/.config/assess-tech/projects.md`. Say "update my projects" to change the list, or pass paths for a single run.
 
+It only reads the projects a tool can touch. A skill, prompt or other agent tooling is compared with your agent setup instead of your apps. A tool for one domain, such as social media or payments, is checked only against the projects that already have that domain.
+
 ### Install
 
 ```sh
